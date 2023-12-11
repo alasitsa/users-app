@@ -33,7 +33,7 @@ class UserService {
     }
 
     async updateUser(data) {
-        this.connection.query("UPDATE users SET email = ?, first_name = ?, last_name = ? WHERE id = ?;", [data.email, data.first_name, data.last_name, data.id]);
+        this.connection.query("UPDATE users SET email = ?, first_name = ?, last_name = ?, image = ? WHERE id = ?;", [data.email, data.first_name, data.last_name, data.image, data.id]);
     }
 
     async deleteUser(id) {
