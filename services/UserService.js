@@ -14,15 +14,26 @@ class UserService {
         }).promise();
     }
     async getUsers() {
-        return this.connection.query("SELECT * FROM users");
+        let response = await this.connection.query("SELECT * FROM users");
+        return response[0];
+    }
+
+    async getUser(id) {
+        let response = await this.connection.query("SELECT * FROM users WHERE id = ? LIMIT 1", [id]);
+        return response[0][0];
+    }
+
+    async getUserByEmail(email) {
+        let response = await this.connection.query("SELECT * FROM users WHERE email = ? LIMIT 1", [email]);
+        return response[0][0];
     }
 
     async createUser(data) {
-        this.connection.query("INSERT INTO users (email, first_name, last_name) VALUES (?, ?, ?)", [data.email, data.first_name, data.last_name]);
+        this.connection.query("INSERT INTO users (email, first_name, last_name, password) VALUES (?, ?, ?, ?)", [data.email, data.first_name, data.last_name, data.password]);
     }
 
     async updateUser(data) {
-        this.connection.query("UPDATE users SET email = ?, first_name = ?, last_name = ? WHERE id = ?;", [data.email, data.first_name, data.last_name, data.id]);
+        this.connection.query("UPDATE users SET email = ?, first_name = ?, last_name = ?, image = ? WHERE id = ?;", [data.email, data.first_name, data.last_name, data.image, data.id]);
     }
 
     async deleteUser(id) {
