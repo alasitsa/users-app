@@ -29,7 +29,7 @@ class UserService {
     }
 
     async createUser(data) {
-        this.connection.query("INSERT INTO users (email, first_name, last_name) VALUES (?, ?, ?)", [data.email, data.first_name, data.last_name]);
+        this.connection.query("INSERT INTO users (email, first_name, last_name, password) VALUES (?, ?, ?, ?)", [data.email, data.first_name, data.last_name, data.password]);
     }
 
     async updateUser(data) {

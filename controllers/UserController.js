@@ -4,6 +4,9 @@ class UserController {
     async getUsers(req, res) {
         try {
             let users = await userService.getUsers();
+            users.forEach((user) => {
+                delete user.password;
+            });
             return res.status(200).send(users);
         } catch (error) {
             console.log(error);
@@ -13,73 +16,7 @@ class UserController {
 
     async getUser(req, res) {
         try {
-            let params = req.params;
-            if (!params.userId) {
-                return res.status(422).send({message: "Invalid payload"});
-            }
-            let user = await userService.getUser(params.userId);
-            if (!user) {
-                return res.status(404).send({message: "User not found"});
-            }
-            return res.status(200).send(user);
-        } catch (error) {
-            console.log(error);
-            return res.status(500).send({message: "Internal server error"})
-        }
-    }
-
-    async getUserByEmail(req, res) {
-        try {
-            let params = req.query;
-            if (!params.email) {
-                return res.status(422).send({message: "Invalid payload"});
-            }
-            let user = await userService.getUserByEmail(params.email);
-            if (!user) {
-                return res.status(404).send({message: "User not found"});
-            }
-            return res.status(200).send(user);
-        } catch (error) {
-            console.log(error);
-            return res.status(500).send({message: "Internal server error"})
-        }
-    }
-
-    async createUser(req, res) {
-        try {
-            let params = req.query;
-            if (!params.email || !params.first_name || !params.last_name) {
-                return res.status(422).send({message: "Invalid payload"});
-            }
-            await userService.createUser(params);
-            return res.status(200).send({message: "Success"});
-        } catch (error) {
-            console.log(error);
-            return res.status(500).send({message: "Internal server error"})
-        }
-    }
-
-    async updateUser(req, res) {
-        try {
-            let params = req.query;
-            if (!params.id || !params.email || !params.first_name || !params.last_name) {
-                return res.status(422).send({message: "Invalid payload"});
-            }
-            let user = await userService.getUser(params.id);
-            if (!user) {
-                return res.status(404).send({message: "User not found"});
-            }
-            await userService.updateUser(params);
-            return res.status(200).send({message: "Success"});
-        } catch (error) {
-            console.log(error);
-            return res.status(500).send({message: "Internal server error"})
-        }
-    }
-
-    async deleteUser(req, res) {
-        try {
-            let params = req.query;
+            let params = req.user;
             if (!params.id) {
                 return res.status(422).send({message: "Invalid payload"});
             }
@@ -87,8 +24,8 @@ class UserController {
             if (!user) {
                 return res.status(404).send({message: "User not found"});
             }
-            await userService.deleteUser(params.id);
-            return res.status(200).send({message: "Success"});
+            delete user.password;
+            return res.status(200).send(user);
         } catch (error) {
             console.log(error);
             return res.status(500).send({message: "Internal server error"})
