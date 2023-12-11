@@ -4,7 +4,41 @@ class UserController {
     async getUsers(req, res) {
         try {
             let users = await userService.getUsers();
-            return res.status(200).send(users[0]);
+            return res.status(200).send(users);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send({message: "Internal server error"})
+        }
+    }
+
+    async getUser(req, res) {
+        try {
+            let params = req.params;
+            if (!params.userId) {
+                return res.status(422).send({message: "Invalid payload"});
+            }
+            let user = await userService.getUser(params.userId);
+            if (!user) {
+                return res.status(404).send({message: "User not found"});
+            }
+            return res.status(200).send(user);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send({message: "Internal server error"})
+        }
+    }
+
+    async getUserByEmail(req, res) {
+        try {
+            let params = req.query;
+            if (!params.email) {
+                return res.status(422).send({message: "Invalid payload"});
+            }
+            let user = await userService.getUserByEmail(params.email);
+            if (!user) {
+                return res.status(404).send({message: "User not found"});
+            }
+            return res.status(200).send(user);
         } catch (error) {
             console.log(error);
             return res.status(500).send({message: "Internal server error"})
@@ -31,6 +65,10 @@ class UserController {
             if (!params.id || !params.email || !params.first_name || !params.last_name) {
                 return res.status(422).send({message: "Invalid payload"});
             }
+            let user = await userService.getUser(params.id);
+            if (!user) {
+                return res.status(404).send({message: "User not found"});
+            }
             await userService.updateUser(params);
             return res.status(200).send({message: "Success"});
         } catch (error) {
@@ -44,6 +82,10 @@ class UserController {
             let params = req.query;
             if (!params.id) {
                 return res.status(422).send({message: "Invalid payload"});
+            }
+            let user = await userService.getUser(params.id);
+            if (!user) {
+                return res.status(404).send({message: "User not found"});
             }
             await userService.deleteUser(params.id);
             return res.status(200).send({message: "Success"});

@@ -14,7 +14,18 @@ class UserService {
         }).promise();
     }
     async getUsers() {
-        return this.connection.query("SELECT * FROM users");
+        let response = await this.connection.query("SELECT * FROM users");
+        return response[0];
+    }
+
+    async getUser(id) {
+        let response = await this.connection.query("SELECT * FROM users WHERE id = ? LIMIT 1", [id]);
+        return response[0][0];
+    }
+
+    async getUserByEmail(email) {
+        let response = await this.connection.query("SELECT * FROM users WHERE email = ? LIMIT 1", [email]);
+        return response[0][0];
     }
 
     async createUser(data) {
